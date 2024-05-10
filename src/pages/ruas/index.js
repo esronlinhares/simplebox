@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0A1126'
+    backgroundColor: '#080326'
     
   },
   select:{
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   button:{
-    backgroundColor: '#2ABFB0',
+    backgroundColor: '#F2911B',
     borderRadius: 8,
     marginHorizontal: 20,
     padding: 10,
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     width: '80%',
     marginBottom: 20,
     backgroundColor: 'white',
-    borderColor: '#DBF22E'
+    borderColor: '#F2911B'
   },
   containerList:{
     flexDirection: 'row',
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderColor: '#D9831A'
+    borderColor: '#F2911B'
   },
   textList:{
     fontSize: 16

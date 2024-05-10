@@ -218,10 +218,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0A1126'
+    backgroundColor: '#080326'
   },
   button: {
-    backgroundColor: '#2ABFB0',
+    backgroundColor: '#F2911B',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',

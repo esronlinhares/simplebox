@@ -28,7 +28,7 @@ function MainTabs() {
         borderTopWidth: 0,
       },
       tabBarBackground: () => (
-        <View style={{ flex: 1, backgroundColor: '#DBF22E' }} />
+        <View style={{ flex: 1, backgroundColor: '#F2911B' }} />
       )
     }}
     >

@@ -102,7 +102,7 @@ export default function Pesquisar() {
   return (
     <View style={styles.container}>
         <View style={styles.inputContainer}>
-          <Ionicons name="search" size={20} color="#DBF22E" style={styles.searchIcon} />
+          <Ionicons name="search" size={20} color="#F2911B" style={styles.searchIcon} />
           <TextInput
             style={styles.input}
             placeholder="Pesquisar"
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0A1126'
+    backgroundColor: '#080326'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     backgroundColor: 'white',
-    borderColor: '#DBF22E'
+    borderColor: '#F2911B'
   },
   input: {
     flex: 1,

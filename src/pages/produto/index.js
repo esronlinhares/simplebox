@@ -21,10 +21,17 @@ export default function Produto(){
     const [descricao, setDescricao] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Verifica se o usuário está autenticado
+    const user = auth.currentUser;
+    if (!user) {
+        Alert.alert("Erro", "Usuário não autenticado.");
+        return null;
+    }
+
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
-                await getRuas();
+                if (user) await getRuas();
             };
             fetchData();
         }, [ruaSelecionada])
@@ -43,25 +50,22 @@ export default function Produto(){
 
     async function getRuas() {
         try {
-          const user = auth.currentUser;
-          const q = query(collection(db, 'usuarios', user.uid, 'ruas'));
-          const ruasSnapshot = await getDocs(q);
-    
-          const listaRuas = ruasSnapshot.docs.map(doc => ({
-            id: doc.id,
-            nome: doc.data().nome,
-          }));
-    
-          setRuas(listaRuas);
+            const q = query(collection(db, 'usuarios', user.uid, 'ruas'));
+            const ruasSnapshot = await getDocs(q);
+            const listaRuas = ruasSnapshot.docs.map(doc => ({
+                id: doc.id,
+                nome: doc.data().nome,
+            }));
+            setRuas(listaRuas);
         } catch (error) {
-          console.error("Erro ao obter ruas:", error);
+            console.error("Erro ao obter ruas:", error);
+            Alert.alert("Erro", "Falha ao buscar ruas.");
         }
     }
     
-      async function getCompartimentos(ruaId) {
+    async function getCompartimentos(ruaId) {
         try {
           if (ruaId) {
-            const user = auth.currentUser;
             const q = query(collection(db, 'usuarios', user.uid, 'ruas', ruaId, 'compartimentos'));
             const compartimentosSnapshot = await getDocs(q);
     
@@ -105,36 +109,33 @@ export default function Produto(){
         }
     }
 
+    // Upload de imagem com verificação de tipo e tamanho
     async function uploadImageAndGetLink() {
         try {
-            const user = auth.currentUser;
             const imageUri = image;
-    
-            // Obtendo a extensão do arquivo do URI
-            const fileExtension = imageUri.split('.').pop();
-    
-            // Criando um nome único para a imagem
+            const fileExtension = imageUri.split('.').pop().toLowerCase();
+            const validExtensions = ['jpg', 'png', 'jpeg'];
+            if (!validExtensions.includes(fileExtension)) {
+                throw new Error('Formato de arquivo não suportado.');
+            }
+
             const imageName = `${nome}.${fileExtension}`;
-    
-            // Referência ao local no storage onde a imagem será armazenada
             const storageRef = ref(storage, `imagens/${user.uid}/${imageName}`);
-    
-            // Convertendo o URI para Blob
+
             const response = await fetch(imageUri);
             const blob = await response.blob();
-    
-            // Realiza o upload da imagem
+
+            if (blob.size > 5000000) { // Limitar tamanho do arquivo a 5MB
+                throw new Error('Arquivo muito grande.');
+            }
+
             const uploadTask = uploadBytesResumable(storageRef, blob);
-    
-            // Aguarda a conclusão do upload
             await uploadTask;
-    
-            // Obtém o link da imagem após o upload
             const downloadUrl = await getDownloadURL(storageRef);
-    
             return downloadUrl;
         } catch (error) {
             console.error("Erro ao fazer upload da imagem:", error);
+            Alert.alert("Erro", "Falha ao fazer upload da imagem.");
             throw error;
         }
     }
@@ -158,7 +159,6 @@ export default function Produto(){
                 return;
             }
 
-            const user = auth.currentUser;
             const produtosRef = collection(db, 'usuarios', user.uid, 'ruas', ruaSelecionada, 'compartimentos', compartimentoSelecionado, 'produtos');
 
             const existingProductQuery = query(produtosRef, where('nome', '==', nome));
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#0A1126'
+        backgroundColor: '#080326'
     },
     image:{
         height: 320,
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderWidth: 2,
         borderRadius: 10,
-        borderColor: '#DBF22E'
+        borderColor: '#F2911B'
     },
     containerNome:{
         flexDirection: 'row',
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     button:{
-        backgroundColor: '#2ABFB0',
+        backgroundColor: '#F2911B',
         borderRadius: 8,
         marginHorizontal: 20,
         padding: 10,
