@@ -13,7 +13,8 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-//alteração do Ismael
+//alteração do 
+//alterando mais
 
 export default function Ruas() {
   const [ruas, setRuas] = useState([]);
