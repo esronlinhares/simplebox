@@ -16,6 +16,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 //alteração do Ismael
 //alterando mais
 //mais um
+//esron
 
 export default function Ruas() {
   const [ruas, setRuas] = useState([]);
