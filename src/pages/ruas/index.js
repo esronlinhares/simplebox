@@ -18,6 +18,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 //mais um
 //esron
 // alteração do Esron agr foi?
+//teste
 
 export default function Ruas() {
   const [ruas, setRuas] = useState([]);
