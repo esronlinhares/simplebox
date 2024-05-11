@@ -17,6 +17,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 //alterando mais
 //mais um
 //esron
+//sabado na casa do ismael
 
 export default function Ruas() {
   const [ruas, setRuas] = useState([]);
