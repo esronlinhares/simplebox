@@ -8,5 +8,3 @@ export function tabIcon(routeName, focused) {
     };
     return iconMap[routeName];
   }
-
-//teste
