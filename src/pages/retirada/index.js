@@ -1,60 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, Pressable, Image, TextInput, Alert, ImageBackground} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Modal, Pressable, TextInput, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import RNPickerSelect from 'react-native-picker-select';
-import { auth, db } from '../../services/firebaseConfig';
-import { addDoc, getDocs, collection, serverTimestamp, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { useCompartment } from '../../hooks/useCompartment';
 
 export default function Retirada() {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [productDetails, setProductDetails] = useState(null);
-  const [quantity, setQuantity] = useState('');
-  const [nota, setNota] = useState('');
-  const [compartmentName, setCompartmentName] = useState('');
-  const [productsInCompartment, setProductsInCompartment] = useState([]);
-  const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [productDetails, setProductDetails] = useState(null);
+    const [quantity, setQuantity] = useState('');
+    const [nota, setNota] = useState('');
+    const [loading, setLoading] = useState(false);
+    const { productsInCompartment, findCompartment } = useCompartment();
 
   const handleQRCodeButtonPress = () => {
     setModalVisible(true);
   };
 
-  const handleQRCodeScanned = ({ data }) => {
+  const handleQRCodeScanned = async ({ data }) => {
     console.log('Código QR lido:', data);
-
-    setCompartmentName(data);
-    findCompartment(data);
-    alert('Compartimento encontrado!');
     setModalVisible(false);
-  };
-
-  const findCompartment = async (compartmentName) => {
-    try {
-      const user = auth.currentUser;
-      const ruasRef = collection(db, 'usuarios', user.uid, 'ruas');
-      const ruasSnapshot = await getDocs(ruasRef);
-
-      for (const ruaDoc of ruasSnapshot.docs) {
-        const compartimentosRef = collection(ruasRef, ruaDoc.id, 'compartimentos');
-        const compartimentosSnapshot = await getDocs(compartimentosRef);
-
-        for (const compartimentoDoc of compartimentosSnapshot.docs) {
-          const compartimentoData = compartimentoDoc.data();
-
-          if (compartimentoData.nome === compartmentName) {
-            console.log('Compartimento encontrado:', compartimentoData);
-
-            const produtosRef = collection(compartimentosRef, compartimentoDoc.id, 'produtos');
-            const produtosSnapshot = await getDocs(produtosRef);
-            const produtosList = produtosSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-            setProductsInCompartment(produtosList);
-
-            return { compartimentoData, ruaData: ruaDoc.data() };
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao consultar o banco de dados:', error);
+    const { compartmentData, ruaData } = await findCompartment(data);
+    if (compartmentData && ruaData) {
+        Alert.alert('Compartimento encontrado!');
+    } else {
+        Alert.alert('Compartimento não encontrado');
     }
   };
 
