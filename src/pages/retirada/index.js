@@ -1,30 +1,60 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, Pressable, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Modal, Pressable, Image, TextInput, Alert, ImageBackground} from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import RNPickerSelect from 'react-native-picker-select';
+import { auth, db } from '../../services/firebaseConfig';
+import { addDoc, getDocs, collection, serverTimestamp, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useCompartment } from '../../hooks/useCompartment';
 
 export default function Retirada() {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [productDetails, setProductDetails] = useState(null);
-    const [quantity, setQuantity] = useState('');
-    const [nota, setNota] = useState('');
-    const [loading, setLoading] = useState(false);
-    const { productsInCompartment, findCompartment } = useCompartment();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [productDetails, setProductDetails] = useState(null);
+  const [quantity, setQuantity] = useState('');
+  const [nota, setNota] = useState('');
+  const [compartmentName, setCompartmentName] = useState('');
+  const [productsInCompartment, setProductsInCompartment] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleQRCodeButtonPress = () => {
     setModalVisible(true);
   };
 
-  const handleQRCodeScanned = async ({ data }) => {
+  const handleQRCodeScanned = ({ data }) => {
     console.log('Código QR lido:', data);
+
+    setCompartmentName(data);
+    findCompartment(data);
+    alert('Compartimento encontrado!');
     setModalVisible(false);
-    const { compartmentData, ruaData } = await findCompartment(data);
-    if (compartmentData && ruaData) {
-        Alert.alert('Compartimento encontrado!');
-    } else {
-        Alert.alert('Compartimento não encontrado');
+  };
+
+  const findCompartment = async (compartmentName) => {
+    try {
+      const user = auth.currentUser;
+      const ruasRef = collection(db, 'usuarios', user.uid, 'ruas');
+      const ruasSnapshot = await getDocs(ruasRef);
+
+      for (const ruaDoc of ruasSnapshot.docs) {
+        const compartimentosRef = collection(ruasRef, ruaDoc.id, 'compartimentos');
+        const compartimentosSnapshot = await getDocs(compartimentosRef);
+
+        for (const compartimentoDoc of compartimentosSnapshot.docs) {
+          const compartimentoData = compartimentoDoc.data();
+
+          if (compartimentoData.nome === compartmentName) {
+            console.log('Compartimento encontrado:', compartimentoData);
+
+            const produtosRef = collection(compartimentosRef, compartimentoDoc.id, 'produtos');
+            const produtosSnapshot = await getDocs(produtosRef);
+            const produtosList = produtosSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+            setProductsInCompartment(produtosList);
+
+            return { compartimentoData, ruaData: ruaDoc.data() };
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao consultar o banco de dados:', error);
     }
   };
 
@@ -212,7 +242,7 @@ const styles = StyleSheet.create({
     width: 150,
     marginTop: 650
   },
-  select:{
+  select: {
     borderRadius: 8,
     height: 40,
     width: '80%',
@@ -223,25 +253,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  containerProduto:{
+  containerProduto: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%'
   },
-  imagemProduto:{
+  imagemProduto: {
     height: 300,
     width: 300,
     borderRadius: 8,
     marginTop: 20
   },
-  inputQuantidade:{
+  inputQuantidade: {
     borderRadius: 8,
     height: 40,
     paddingHorizontal: 15,
     fontSize: 16,
     backgroundColor: 'white'
   },
-  inputNota:{
+  inputNota: {
     marginTop: 10,
     borderRadius: 8,
     height: 130,
@@ -250,18 +280,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: 'white'
   },
-  text:{
+  text: {
     fontSize: 22,
     fontWeight: 'bold'
   },
-  containerQuantidade:{
+  containerQuantidade: {
     flexDirection: 'row',
     width: '80%',
     justifyContent: 'space-between',
     marginTop: 10,
     alignItems: 'center'
   },
-  modal:{
+  modal: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
