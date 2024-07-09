@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, Pressable, Image, Modal, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, Image, Modal, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker'
 import { ModalImage } from '../../components/modal';
@@ -8,9 +8,10 @@ import { getDocs, query, collection, setDoc, doc, serverTimestamp, where } from 
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useFocusEffect } from '@react-navigation/native';
+import { styles } from './styles';
 
 export default function Produto(){
-    const [image, setImage] = useState('https://media.discordapp.net/attachments/894781122519650315/1184451467785023488/product-image.png?ex=658c0563&is=65799063&hm=018ee1055cfcf14527681a83af3024c0b69eb02f332a012fd95327f236dc41c3&=&format=webp&quality=lossless');
+    const [image, setImage] = useState(require('../../../assets/image-icon.png'));
     const [modalVisible, setModalVisible] = useState(false);
     const [ruas, setRuas] = useState([]);
     const [ruaSelecionada, setRuaSelecionada] = useState('');
@@ -200,7 +201,7 @@ export default function Produto(){
             <View style={styles.container}>
                 <Pressable style={styles.buttonImage} onPress={escolherImagem}>
                     <Image
-                    source={typeof image === 'string' ? { uri: image } : image}
+                    source={image}
                     style={styles.image}
                     />
                 </Pressable>
@@ -284,93 +285,3 @@ export default function Produto(){
     
     )
 }
-
-const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#080326'
-    },
-    image:{
-        height: 320,
-        width: 320,
-        borderRadius: 8,
-        backgroundColor: 'white'
-    },
-    buttonImage:{
-        marginTop: 20,
-        borderWidth: 2,
-        borderRadius: 10,
-        borderColor: '#F2911B'
-    },
-    containerNome:{
-        flexDirection: 'row',
-        marginTop: 20,
-        width: '80%',
-        justifyContent: 'space-between'
-    },
-    inputNome:{
-        borderRadius: 8,
-        height: 40,
-        width: 200,
-        paddingHorizontal: 15,
-        fontSize: 16,
-        backgroundColor: 'white'
-    },
-    inputQuantidade:{
-        borderRadius: 8,
-        height: 40,
-        width: 100,
-        paddingHorizontal: 15,
-        fontSize: 16,
-        backgroundColor: 'white'
-    },
-    inputDescricao:{
-        marginTop: 10,
-        borderRadius: 8,
-        height: 100,
-        width: '80%',
-        paddingHorizontal: 15,
-        fontSize: 16,
-        backgroundColor: 'white'
-    },
-    containerSelect:{
-        width: '80%'
-    },
-    select:{
-        borderRadius: 8,
-        height: 40,
-        width: '100%',
-        marginTop: 20,
-        fontSize: 16,
-        color: 'black',
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    containerButton:{
-        flexDirection: 'row',
-        marginTop: 20
-    },
-    button:{
-        backgroundColor: '#F2911B',
-        borderRadius: 8,
-        marginHorizontal: 20,
-        padding: 10,
-        width: 100,
-        alignItems: 'center'
-    },
-    buttonText:{
-        color: 'white',
-        fontWeight: 'bold'
-    },
-    spinnerText: {
-        color: '#F26716',
-        backgroundColor: 'white',
-        borderRadius: 8,
-        padding: 10,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-})

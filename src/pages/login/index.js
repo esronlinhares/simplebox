@@ -2,7 +2,8 @@ import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react';
 import { auth } from '../../services/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import {View, Text, TextInput, StyleSheet, Image, Pressable} from 'react-native'
+import {View, Text, TextInput, Image, Pressable} from 'react-native'
+import { styles } from './styles';
 
 export default function Login(){
     const navigation = useNavigation();
@@ -33,11 +34,10 @@ export default function Login(){
             } else {
               // Lidar com outros tipos de erros
               console.error("Erro não tratado:", errorCode, errorMessage);
-              setEmailError("Erro ao fazer login. Por favor, tente novamente.");
+              setEmailError("Por favor, verifique se email ou senha estão corretos.");
             }
           });
-      }
-
+    }
 
     return(
         <View style={styles.container}>
@@ -80,71 +80,11 @@ export default function Login(){
                         <Text style={styles.textLink}>Criar conta</Text>
                     </Pressable>
                 </View>
-
-                <Text style={styles.textLink}>Esqueci minha senha</Text>
+                
+                <Pressable onPress={() => navigation.navigate('ReplacePass')}>
+                    <Text style={styles.textLink}>Esqueci minha senha</Text>
+                </Pressable>
             </View>
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    logo:{
-        width: 230,
-        height: 230,
-        resizeMode: 'contain',
-    },
-    containerInput:{
-        alignItems: 'center',
-        width: "100%",
-        marginTop: 30
-    },
-    input:{
-        width: "80%",
-        height: 40,
-        paddingHorizontal: 15,
-        borderWidth: 2,
-        borderRadius: 8,
-        alignItems: 'center',
-        flexShrink: 0,
-        borderRadius: 8,
-        marginBottom: 20
-    },
-    button:{
-        backgroundColor: "#080326",
-        padding: 8,
-        borderRadius: 8,
-        height: 40,
-        width: 80,
-        alignItems: 'center'
-    },
-    textButton:{
-        color: 'white',
-        fontSize: 16
-    },
-    containerTexto:{
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 20,
-        marginBottom: 5
-    },
-    textConta:{
-        fontSize: 16
-    },
-    textLink:{
-        fontSize: 16,
-        color: "#42B0CB"
-    },
-    inputError: {
-        borderColor: 'red',  // Cor da borda quando há um erro
-    },
-    errorText: {
-        color: 'red',
-        fontSize: 12,
-        marginBottom: 10,
-    },
-})

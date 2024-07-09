@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, Pressable, Alert, ImageBackground } from 'react-native';
+import { View, Text, Pressable, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../services/firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
+import { styles } from './styles';
 
 export default function Perfil() {
     const navigation = useNavigation();
@@ -40,24 +41,3 @@ export default function Perfil() {
             </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#080326'
-    },
-    button:{
-        backgroundColor: '#F2911B',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 15,
-        borderRadius: 8
-    },
-    buttonText:{
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold'
-    }
-});
